@@ -1,33 +1,47 @@
 {% extends "base.html" %}
 
+{% block title %}Авторизация — ВыкупАвто МСК{% endblock %}
+
 {% block content %}
-    <h1>Authorization</h1>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(class="form-control", type="email") }}<br>
-            {% for error in form.email.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(class="form-control", type="password") }}<br>
-            {% for error in form.password.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-        <p>НЕТ АККАУНТА?
-            <a href='/register' class="btn btn-secondary">Зарегистрироваться</a>
-        </p>
-        
-        <div>{{ message }}</div>
+<section class="section" style="padding-top:120px; min-height:80vh;">
+  <div class="container" style="max-width:420px;">
+    <h1 class="section-title" style="text-align:center; margin-bottom:8px;">Авторизация</h1>
+    <p class="section-subtitle" style="margin-bottom:32px;">Войдите в панель управления заявками</p>
+
+    <form action="" method="post" class="form-card">
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-input", type="email", placeholder="admin@vykupavto.ru") }}
+        {% for error in form.email.errors %}
+          <div style="color:var(--error); font-size:12px; margin-top:4px;">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.password.label(class="form-label") }}
+        {{ form.password(class="form-input", type="password", placeholder="Пароль") }}
+        {% for error in form.password.errors %}
+          <div style="color:var(--error); font-size:12px; margin-top:4px;">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+        {{ form.remember_me(style="width:16px;height:16px;accent-color:var(--accent);") }}
+        {{ form.remember_me.label(style="font-size:13px;color:var(--text-secondary);") }}
+      </div>
+
+      <button type="submit" class="btn btn-accent btn-large form-submit">{{ form.submit.label.text }}</button>
+
+      <p style="text-align:center; margin-top:16px; font-size:13px; color:var(--text-muted);">
+        Нет аккаунта? <a href="/register" style="color:var(--accent); font-weight:600;">Зарегистрироваться</a>
+      </p>
+
+      {% if message %}
+        <div style="color:var(--error); text-align:center; margin-top:12px; font-size:13px;">{{ message }}</div>
+      {% endif %}
     </form>
+  </div>
+</section>
 {% endblock %}

@@ -1,16 +1,231 @@
 {% extends "base.html" %}
 
+{% block title %}Срочный выкуп авто в Москве — ВыкупАвто МСК{% endblock %}
+{% block meta %}Срочный выкуп автомобилей в Москве и Московской области. Честная оценка до 98,5% от рыночной стоимости. Выезд оценщика за 30 минут.{% endblock %}
+
 {% block content %}
-<h1>Записи в блоге</h1>
-{% for item in news %}
-<div class="col-md6 border rounded">
-    <h2>{{ item.title }}</h2>
-    <div>
-        {{ item.content }}
+
+<!-- Hero -->
+<section class="hero" id="form">
+  <div class="hero-bg"></div>
+  <div class="container hero-inner">
+
+    <!-- Левая колонка -->
+    <div class="hero-left">
+      <div class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Выезд оценщика за 30 минут
+      </div>
+      <h1 class="hero-title">
+        Выкупаем авто<br>
+        <span class="accent">быстро и дорого</span>
+      </h1>
+      <p class="hero-subtitle">
+        Профессиональный выкуп автомобилей в Москве и Московской области.
+        Честная оценка до 98,5% от рыночной стоимости.
+      </p>
+      <div class="hero-buttons">
+        <a href="#services" class="btn btn-accent btn-large">
+          Услуги
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="tel:+79777805295" class="btn btn-outline btn-large">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13 1.05.6 2.05 1.38 2.85l.64.63a2 2 0 0 1 0 2.82l-.88.88a16 16 0 0 0 6 6l.88-.88a2 2 0 0 1 2.82 0l.63.64a2 2 0 0 0 2.85 1.38A2 2 0 0 1 22 16.92z"/></svg>
+          Позвонить
+        </a>
+      </div>
+      <div class="hero-trust">
+        <div class="badges-row">
+          <div class="badge-circle" title="Авто.ру">АС</div>
+          <div class="badge-circle" title="Дром">ДП</div>
+          <div class="badge-circle" title="ВКонтакте">ВК</div>
+          <div class="badge-circle" title="Самара/СМ">СМ</div>
+        </div>
+        <div>
+          <div class="rating-stars">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="rating-text">500+ довольных клиентов</div>
+        </div>
+      </div>
     </div>
-    <div>
-        Автор - {{ item.user.name }}, Дата написания - {{ item.created_date }}
+
+    <!-- Правая колонка — форма -->
+    <div class="hero-right">
+      <form class="form-card" action="/submit" method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          {{ form.name.label(class="form-label") }}
+          {{ form.name(class="form-input", placeholder="Иван Иванов") }}
+          {% for error in form.name.errors %}
+            <div style="color:var(--error); font-size:12px; margin-top:4px;">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.phone.label(class="form-label") }}
+          {{ form.phone(class="form-input", placeholder="+7 (___) ___-__-__", id="phone") }}
+          {% for error in form.phone.errors %}
+            <div style="color:var(--error); font-size:12px; margin-top:4px;">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.car_model.label(class="form-label") }}
+          {{ form.car_model(class="form-input", placeholder="BMW X5, 2020 год") }}
+          {% for error in form.car_model.errors %}
+            <div style="color:var(--error); font-size:12px; margin-top:4px;">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <div class="form-group" style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+          <div>
+            {{ form.car_year.label(class="form-label") }}
+            {{ form.car_year(class="form-input", placeholder="2020") }}
+          </div>
+          <div>
+            {{ form.mileage.label(class="form-label") }}
+            {{ form.mileage(class="form-input", placeholder="85 000 км") }}
+          </div>
+        </div>
+        <div class="form-group">
+          {{ form.condition.label(class="form-label") }}
+          {{ form.condition(class="form-select form-input") }}
+        </div>
+        <div class="form-group">
+          {{ form.comment.label(class="form-label") }}
+          {{ form.comment(class="form-input", placeholder="Пробег, состояние, комментарии...") }}
+        </div>
+        <button type="submit" class="btn btn-accent btn-large form-submit">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          Получить оценку
+        </button>
+        <p class="form-disclaimer">
+          Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+        </p>
+      </form>
     </div>
-</div>
-{% endfor %}
+
+  </div>
+</section>
+
+<!-- Услуги -->
+<section class="section" id="services">
+  <div class="container">
+    <h2 class="section-title">Выкупаем любые авто</h2>
+    <p class="section-subtitle">Работаем с автомобилями в любом состоянии — от идеального до аварийного</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3 class="service-title">Битые и аварийные</h3>
+        <p class="service-desc">Выкупаем автомобили после ДТП, с механическими повреждениями и сильным износом по справедливой цене.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </div>
+        <h3 class="service-title">Кредитные и залоговые</h3>
+        <p class="service-desc">Помогаем погасить кредит и выкупаем авто с обременениями. Берём на себя все юридические вопросы.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3 class="service-title">Без ПТС и документов</h3>
+        <p class="service-desc">Работаем даже при отсутствии полного пакета документов. Помогаем восстановить нужные бумаги.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        </div>
+        <h3 class="service-title">Не на ходу</h3>
+        <p class="service-desc">Эвакуируем за свой счёт. Выкупаем машины с неисправным двигателем, КПП и другими поломками.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3 class="service-title">Коммерческий транспорт</h3>
+        <p class="service-desc">Грузовики, микроавтобусы, спецтехника — быстрая оценка и выкуп в день обращения.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3 class="service-title">Иномарки и премиум</h3>
+        <p class="service-desc">Особые условия для BMW, Mercedes, Audi, Porsche и других премиальных брендов.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Как это работает -->
+<section class="section" id="steps">
+  <div class="container">
+    <h2 class="section-title">Как это работает</h2>
+    <p class="section-subtitle">Весь процесс от заявки до денег занимает менее 2 часов</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Заявка</div>
+        <div class="step-desc">Заполните форму на сайте или позвоните — мы ответим за 2 минуты</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Оценка</div>
+        <div class="step-desc">Оценщик выедет к вам или проведёт оценку по фото и описанию</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Сделка</div>
+        <div class="step-desc">Оформляем договор купли-продажи и все документы на месте</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Деньги</div>
+        <div class="step-desc">Выплачиваем сумму сразу — наличными или на карту</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Преимущества (коротко) -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+      <div class="service-card" style="text-align:center;">
+        <div class="service-icon" style="margin:0 auto 14px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3 class="service-title">30 минут</h3>
+        <p class="service-desc">Выезд оценщика в любую точку Москвы и области</p>
+      </div>
+      <div class="service-card" style="text-align:center;">
+        <div class="service-icon" style="margin:0 auto 14px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h3 class="service-title">98,5%</h3>
+        <p class="service-desc">Выплачиваем до 98,5% от рыночной стоимости авто</p>
+      </div>
+      <div class="service-card" style="text-align:center;">
+        <div class="service-icon" style="margin:0 auto 14px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="service-title">Юрист онлайн</h3>
+        <p class="service-desc">Помогаем с любыми правовыми вопросами и документами</p>
+      </div>
+      <div class="service-card" style="text-align:center;">
+        <div class="service-icon" style="margin:0 auto 14px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </div>
+        <h3 class="service-title">Нал/безнал</h3>
+        <p class="service-desc">Любая форма расчёта — как вам удобно</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 {% endblock %}

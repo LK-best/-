@@ -1,5 +1,5 @@
 import datetime
-import sqlalchemy
+import sqlalchemy as sa
 from sqlalchemy import orm
 from .db_session import SqlAlchemyBase
 from datetime import timedelta
@@ -9,15 +9,14 @@ from sqlalchemy_serializer import SerializerMixin
 
 class Jobs(SqlAlchemyBase, UserMixin, SerializerMixin):
     __tablename__ = 'jobs'
-    num = datetime.datetime.now
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    team_leader = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
-    job = sqlalchemy.Column(sqlalchemy.String)
-    work_size = sqlalchemy.Column(sqlalchemy.Integer)
-    collaborators = sqlalchemy.Column(sqlalchemy.String)
-    start_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
-    end_date = sqlalchemy.Column(sqlalchemy.DateTime, default=num)
-    is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
+    name = sa.Column(sa.String)        # Имя клиента
+    phone = sa.Column(sa.String)       # Телефон
+    car_model = sa.Column(sa.String)    # Марка/модель
+    year = sa.Column(sa.Integer)        # Год выпуска
+    mileage = sa.Column(sa.Integer)      # Пробег
+    condition = sa.Column(sa.String)    # Состояние
+    price_offer = sa.Column(sa.Integer)  # Предложенная цена
+    status = sa.Column(sa.String)        # 
 
     user = orm.relationship('User')
     categories = orm.relationship("Category", secondary="association", backref="jobs")

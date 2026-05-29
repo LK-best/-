@@ -1,66 +1,76 @@
 {% extends "base.html" %}
 
+{% block title %}Регистрация — ВыкупАвто МСК{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h1>Register Form</h1>
-    <form action="" method="post" class="mt-4">
-        {{ form.hidden_tag() }}
-        
-        <div class="mb-3">
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control", type="email") }}
-        </div>
+<section class="section" style="padding-top:120px; min-height:80vh;">
+  <div class="container" style="max-width:500px;">
+    <h1 class="section-title" style="text-align:center; margin-bottom:8px;">Регистрация</h1>
+    <p class="section-subtitle" style="margin-bottom:32px;">Создайте аккаунт для доступа к админке</p>
 
-        
-            <div class="mb-3">
-                {{ form.password.label(class="form-label") }}
-                {{ form.password(class="form-control", type="password") }}
-            </div>
-            <div class="mb-3">
-                {{ form.password_again.label(class="form-label") }}
-                {{ form.password_again(class="form-control", type="password") }}
-            </div>
-        
+    <form action="" method="post" class="form-card">
+      {{ form.hidden_tag() }}
 
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                {{ form.name.label(class="form-label") }}
-                {{ form.name(class="form-control") }}
-            </div>
-            <div class="col-md-6 mb-3">
-                {{ form.surname.label(class="form-label") }}
-                {{ form.surname(class="form-control") }}
-            </div>
-        </div>
+      <div class="form-group">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-input", type="email", placeholder="example@mail.ru") }}
+        {% for error in form.email.errors %}
+          <div style="color:var(--error); font-size:12px; margin-top:4px;">{{ error }}</div>
+        {% endfor %}
+      </div>
 
-        <div class="mb-3">
-            {{ form.age.label(class="form-label") }}
-            {{ form.age(class="form-control", type="number", min="1") }}
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+        <div class="form-group">
+          {{ form.password.label(class="form-label") }}
+          {{ form.password(class="form-input", type="password") }}
         </div>
+        <div class="form-group">
+          {{ form.password_again.label(class="form-label") }}
+          {{ form.password_again(class="form-input", type="password") }}
+        </div>
+      </div>
 
-        
-        <div class="mb-3">
-            {{ form.position.label(class="form-label") }}
-            {{ form.position(class="form-control") }}
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+        <div class="form-group">
+          {{ form.name.label(class="form-label") }}
+          {{ form.name(class="form-input", placeholder="Имя") }}
         </div>
-        <div class="mb-3">
-            {{ form.speciality.label(class="form-label") }}
-            {{ form.speciality(class="form-control") }}
+        <div class="form-group">
+          {{ form.surname.label(class="form-label") }}
+          {{ form.surname(class="form-input", placeholder="Фамилия") }}
         </div>
-        
+      </div>
 
-        <div class="mb-3">
-            {{ form.address.label(class="form-label") }}
-            {{ form.address(class="form-control") }}
-        </div>
+      <div class="form-group">
+        {{ form.age.label(class="form-label") }}
+        {{ form.age(class="form-input", type="number", min="1", placeholder="25") }}
+      </div>
 
-        <div class="mb-3">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
+      <div class="form-group">
+        {{ form.position.label(class="form-label") }}
+        {{ form.position(class="form-input", placeholder="Должность") }}
+      </div>
 
-        {% if message %}
-            <div class="alert alert-danger mt-3">{{ message }}</div>
-        {% endif %}
+      <div class="form-group">
+        {{ form.speciality.label(class="form-label") }}
+        {{ form.speciality(class="form-input", placeholder="Специальность") }}
+      </div>
+
+      <div class="form-group">
+        {{ form.address.label(class="form-label") }}
+        {{ form.address(class="form-input", placeholder="Город, адрес") }}
+      </div>
+
+      <button type="submit" class="btn btn-accent btn-large form-submit">{{ form.submit.label.text }}</button>
+
+      <p style="text-align:center; margin-top:16px; font-size:13px; color:var(--text-muted);">
+        Уже есть аккаунт? <a href="/login" style="color:var(--accent); font-weight:600;">Войти</a>
+      </p>
+
+      {% if message %}
+        <div style="color:var(--error); text-align:center; margin-top:12px; font-size:13px;">{{ message }}</div>
+      {% endif %}
     </form>
-</div>
+  </div>
+</section>
 {% endblock %}
