@@ -1,3 +1,8 @@
+import os
+import re
+import urllib.parse
+import urllib.request
+
 from flask import Flask, render_template, redirect, request, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -13,6 +18,42 @@ app.config['JSON_AS_ASCII'] = False
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
+TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID', '')
+
+
+def parse_int(value):
+    if value is None or str(value).strip() == '':
+        return None
+    digits = re.sub(r'\D', '', str(value))
+    return int(digits) if digits else None
+
+
+def notify_admin(req):
+    """Мгновенное оповещение админа в Telegram. Если токен не задан — тихо пропускаем."""
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        return
+    text = (
+        f"Новая заявка #{req.id}\n"
+        f"Имя: {req.name}\n"
+        f"Телефон: {req.phone}\n"
+        f"Авто: {req.car_model}\n"
+        f"Год: {req.car_year or '—'}\n"
+        f"Пробег: {req.mileage or '—'}\n"
+        f"Состояние: {req.condition or '—'}\n"
+        f"Комментарий: {req.comment or '—'}"
+    )
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    data = urllib.parse.urlencode({
+        'chat_id': TELEGRAM_CHAT_ID,
+        'text': text,
+    }).encode()
+    try:
+        urllib.request.urlopen(url, data=data, timeout=5)
+    except Exception as e:
+        print('Telegram notify failed:', e)
 
 
 @login_manager.user_loader
@@ -32,8 +73,8 @@ def index():
             name=form.name.data,
             phone=form.phone.data,
             car_model=form.car_model.data,
-            car_year=form.car_year.data,
-            mileage=form.mileage.data,
+            car_year=parse_int(form.car_year.data),
+            mileage=parse_int(form.mileage.data),
             condition=form.condition.data,
             comment=form.comment.data,
             status='Новая'
@@ -42,6 +83,7 @@ def index():
             req.user_id = current_user.id
         db_sess.add(req)
         db_sess.commit()
+        notify_admin(req)
         flash('Заявка отправлена! Мы перезвоним вам в ближайшее время.', 'success')
         return redirect("/")
 
