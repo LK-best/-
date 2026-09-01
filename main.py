@@ -65,6 +65,7 @@ def load_user(user_id):
 # --- Главная (лендинг) ---
 
 @app.route("/", methods=["GET", "POST"])
+@app.route("/submit", methods=["GET", "POST"])
 def index():
     form = CarRequestForm()
     if form.validate_on_submit():
