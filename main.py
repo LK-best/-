@@ -21,13 +21,40 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 try:
-    from telegram_config import TELEGRAM_BOT_TOKEN as _CFG_TOKEN, TELEGRAM_CHAT_ID as _CFG_CHAT
+    from telegram_config import TELEGRAM_BOT_TOKEN as _CFG_TOKEN
+    try:
+        from telegram_config import TELEGRAM_CHAT_IDS as _CFG_IDS
+    except ImportError:
+        _CFG_IDS = []
+    try:
+        from telegram_config import TELEGRAM_CHAT_ID as _CFG_CHAT
+    except ImportError:
+        _CFG_CHAT = ''
 except Exception:
     _CFG_TOKEN = ''
+    _CFG_IDS = []
     _CFG_CHAT = ''
 
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN') or _CFG_TOKEN or ''
-TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID') or str(_CFG_CHAT or '')
+
+
+def _chat_ids():
+    ids = []
+    env = os.environ.get('TELEGRAM_CHAT_IDS') or os.environ.get('TELEGRAM_CHAT_ID') or ''
+    if env:
+        ids.extend(env.split(','))
+    if _CFG_IDS:
+        ids.extend(_CFG_IDS if isinstance(_CFG_IDS, (list, tuple)) else [_CFG_IDS])
+    if _CFG_CHAT:
+        ids.append(_CFG_CHAT)
+    seen = set()
+    result = []
+    for i in ids:
+        s = str(i).strip()
+        if s and s not in seen:
+            seen.add(s)
+            result.append(s)
+    return result
 
 
 def parse_int(value):
@@ -38,8 +65,8 @@ def parse_int(value):
 
 
 def notify_admin(req):
-    """Мгновенное оповещение админа в Telegram. Если токен не задан — тихо пропускаем."""
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+    chats = _chat_ids()
+    if not TELEGRAM_BOT_TOKEN or not chats:
         print('Telegram пропущен: нет токена или chat id (заполни telegram_config.py)')
         return
     text = (
@@ -53,14 +80,15 @@ def notify_admin(req):
         f"Комментарий: {req.comment or '—'}"
     )
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    data = urllib.parse.urlencode({
-        'chat_id': TELEGRAM_CHAT_ID,
-        'text': text,
-    }).encode()
-    try:
-        urllib.request.urlopen(url, data=data, timeout=5)
-    except Exception as e:
-        print('Telegram notify failed:', e)
+    for chat_id in chats:
+        data = urllib.parse.urlencode({
+            'chat_id': chat_id,
+            'text': text,
+        }).encode()
+        try:
+            urllib.request.urlopen(url, data=data, timeout=5)
+        except Exception as e:
+            print('Telegram notify failed for', chat_id, e)
 
 
 @login_manager.user_loader
@@ -111,20 +139,8 @@ def admin():
 
 
 @app.route('/admin/delete/<int:req_id>')
-@login_required
 def delete_request(req_id):
-    if current_user.id != 1:
-        flash('Доступ запрещён.', 'error')
-        return redirect('/')
-    db_sess = db_session.create_session()
-    req = db_sess.get(CarRequest, req_id)
-    if req:
-        db_sess.delete(req)
-        db_sess.commit()
-        flash('Заявка удалена.', 'success')
-    else:
-        flash('Заявка не найдена.', 'error')
-    return redirect('/admin')
+    return redirect('/')
 
 
 # --- Авторизация (из старого проекта) ---
