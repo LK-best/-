@@ -106,14 +106,8 @@ def index():
 # --- Админка заявок ---
 
 @app.route('/admin')
-@login_required
 def admin():
-    if current_user.id != 1:
-        flash('Доступ запрещён.', 'error')
-        return redirect('/')
-    db_sess = db_session.create_session()
-    requests = db_sess.query(CarRequest).order_by(CarRequest.created_date.desc()).all()
-    return render_template("admin.html", requests=requests, count=len(requests))
+    return redirect('/')
 
 
 @app.route('/admin/delete/<int:req_id>')
@@ -137,15 +131,7 @@ def delete_request(req_id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.email == form.email.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
-            return redirect("/")
-        flash("Неверный логин или пароль", "error")
-    return render_template('login.html', title='Авторизация', form=form)
+    return redirect('/')
 
 
 @app.route('/logout')

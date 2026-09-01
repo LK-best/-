@@ -40,18 +40,6 @@
           +7 (977) 780-52-95
         </a>
         <a href="#form" class="btn btn-accent">Оценить авто</a>
-
-        {% if current_user.is_authenticated %}
-          <div class="auth-bar">
-            <span>{{ current_user.name }}</span>
-            <a href="/logout">Выйти</a>
-            {% if current_user.id == 1 %}
-              <a href="/admin">Админка</a>
-            {% endif %}
-          </div>
-        {% else %}
-          <a href="/login" class="btn btn-outline">Войти</a>
-        {% endif %}
       </div>
     </div>
   </header>
