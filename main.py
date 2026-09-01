@@ -20,8 +20,14 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '')
-TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID', '')
+try:
+    from telegram_config import TELEGRAM_BOT_TOKEN as _CFG_TOKEN, TELEGRAM_CHAT_ID as _CFG_CHAT
+except Exception:
+    _CFG_TOKEN = ''
+    _CFG_CHAT = ''
+
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN') or _CFG_TOKEN or ''
+TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID') or str(_CFG_CHAT or '')
 
 
 def parse_int(value):
@@ -34,6 +40,7 @@ def parse_int(value):
 def notify_admin(req):
     """Мгновенное оповещение админа в Telegram. Если токен не задан — тихо пропускаем."""
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        print('Telegram пропущен: нет токена или chat id (заполни telegram_config.py)')
         return
     text = (
         f"Новая заявка #{req.id}\n"
